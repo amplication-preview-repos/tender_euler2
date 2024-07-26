@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Truck {
+  id           String           @id @default(cuid())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  model        String?
+  licensePlate String?
+  status       EnumTruckStatus?
+  truckId      String?
+  trips        Trip[]
+}
+
+model Driver {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  driverId      String?
+  name          String?
+  licenseNumber String?
+  phoneNumber   String?
+  trips         Trip[]
+}
+
+model Route {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  routeId       String?
+  startLocation String?
+  endLocation   String?
+  distance      Float?
+  trips         Trip[]
+}
+
+model Trip {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  tripId        String?
+  departureTime DateTime?
+  arrivalTime   DateTime?
+  truck         Truck?    @relation(fields: [truckId], references: [id])
+  truckId       String?
+  driver        Driver?   @relation(fields: [driverId], references: [id])
+  driverId      String?
+  route         Route?    @relation(fields: [routeId], references: [id])
+  routeId       String?
+}
+
+enum EnumTruckStatus {
+  Option1
+}
